@@ -1,0 +1,40 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+
+import Dashboard from "./pages/Dashboard/Index"
+
+import Overview from "./pages/components/Overview"
+import Issues from "./pages/components/Issues"
+import Recommendations from "./pages/components/Recommendations"
+import Predictions from "./pages/components/Prediction"
+import AuthPage from "./pages/Auth/Index"
+import ProtectedRoute from "./pages/components/ProtectedRoute";
+import Code from "./pages/components/Code"
+export default function App() {
+  return (
+    <BrowserRouter>
+    <Routes>
+  
+      <Route path="/" element={<AuthPage />} />
+      <Route path="/dashboard/code" element={<Code />} />
+  
+      <Route 
+  path="/dashboard" 
+  element={
+    <ProtectedRoute>
+      <Dashboard />
+    </ProtectedRoute>
+  }
+>
+        {/* repo-specific routes */}
+        <Route path=":repoId/overview" element={<Overview />} />
+        <Route path=":repoId/issues" element={<Issues />} />
+        <Route path=":repoId/Recommendations" element={<Recommendations />} />
+        <Route path=":repoId/Predictions" element={<Predictions />} />
+        
+      </Route>
+  
+    </Routes>
+  </BrowserRouter>
+  
+  )
+}

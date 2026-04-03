@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+/* ===== SLEEK SILVER SCROLLBAR ===== */
+/* ===== SLIM OVERLAY SCROLLBAR ===== */
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: transparent;   /* removes big black bar */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(200,200,200,0.55);
+    border-radius: 999px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(230,230,230,0.85);
+  }
