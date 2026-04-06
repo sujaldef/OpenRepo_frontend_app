@@ -405,13 +405,30 @@ function RepoSelectionView({
 
 function WorkspaceShell({ repo, userProfile }) {
   const { repoId } = useParams();
+  const navigate = useNavigate();
+
+  const handleOpenCodeExplorer = async () => {
+    // Call Electron IPC to open new window
+    if (window.electronAPI?.openCodeExplorer) {
+      try {
+        const result = await window.electronAPI.openCodeExplorer(repoId);
+        console.log('Code Explorer opened:', result);
+      } catch (err) {
+        console.error('Failed to open Code Explorer:', err);
+        // Fallback to in-dashboard view
+        navigate(`/dashboard/${repoId}/code-inline`);
+      }
+    } else {
+      // Running in browser without Electron, navigate to inline view
+      navigate(`/dashboard/${repoId}/code-inline`);
+    }
+  };
 
   const sidebarLinks = [
     { path: 'overview', label: 'Overview', icon: LayoutDashboard },
     { path: 'issues', label: 'Issues', icon: AlertCircle },
     { path: 'predictions', label: 'Predictions', icon: Activity },
     { path: 'recommendations', label: 'Recommendations', icon: Lightbulb },
-    { path: 'code', label: 'Code Explorer', icon: Code2 },
   ];
 
   return (
@@ -479,6 +496,19 @@ function WorkspaceShell({ repo, userProfile }) {
                 )}
               </NavLink>
             ))}
+
+            {/* Code Explorer Button - Opens in NEW Window */}
+            <button
+              onClick={handleOpenCodeExplorer}
+              className="relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 border text-zinc-500 border-transparent hover:bg-white/5 hover:text-zinc-300"
+              title="Opens Code Explorer in a new window"
+            >
+              <Code2 size={18} className="text-zinc-500" />
+              Code Explorer
+              <span className="ml-auto text-[10px] text-zinc-600 bg-zinc-900/50 px-1.5 py-0.5 rounded">
+                New Window
+              </span>
+            </button>
           </nav>
         </div>
 
