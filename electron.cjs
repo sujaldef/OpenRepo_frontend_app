@@ -124,3 +124,31 @@ ipcMain.handle('clone-repo', async (event, { url, folder }) => {
     });
   });
 });
+
+// ── Open Code Explorer in NEW Window ──────────────────────────────────
+ipcMain.handle('open-code-explorer', async (event, repoId) => {
+  // Create a new BrowserWindow for Code Explorer
+  const codeExplorerWindow = new BrowserWindow({
+    width: 1600,
+    height: 1000,
+    minWidth: 1200,
+    minHeight: 700,
+    title: `Code Explorer - ${repoId}`,
+    icon: path.join(__dirname, '../assets/icon.png'), // Change if you have an icon
+    webPreferences: {
+      preload: path.join(__dirname, './preload.cjs'),
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: false,
+    },
+  });
+
+  // Load the Code Explorer route in the new window
+  codeExplorerWindow.loadURL(`http://localhost:5173/code/${repoId}`);
+
+  // Open DevTools if in development
+  // codeExplorerWindow.webContents.openDevTools({ mode: 'detach' });
+
+  // Return window ID so we can track it if needed
+  return { success: true, windowId: codeExplorerWindow.id };
+});
