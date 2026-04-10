@@ -10,6 +10,7 @@ Native desktop application for analyzing repositories, detecting issues, and pro
 OpenRepo Frontend App is a powerful **Electron-based desktop application** that brings enterprise-grade code analysis to developers' desktops. Seamlessly inspect repositories, identify issues, get ML predictions, and receive actionable recommendations in a polished, native IDE experience.
 
 ### ✨ Key Features
+
 - 🔍 **Code Explorer**: Native IDE with file tree, syntax highlighting, and issue markers
 - 📊 **Dashboard**: Repository analytics, KPIs, and health metrics
 - ⚠️ **Issue Detection**: Identifies code defects, security issues, and code smells
@@ -61,23 +62,27 @@ frontend-app/
 ## 🚀 Quick Start
 
 ### Prerequisites
+
 - Node.js 16+ and npm
 - Electron 26+
 - Backend running: `uvicorn app:app --reload`
 
 ### Setup
+
 ```bash
 cd frontend-app
 npm install
 ```
 
 ### Development
+
 ```bash
 npm run dev          # Vite dev server
 npm run electron     # Launch Electron app (open Dev Tools)
 ```
 
 ### Production
+
 ```bash
 npm run build        # Build React
 npm run preview      # Test build
@@ -87,22 +92,23 @@ npm run preview      # Test build
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| **Desktop** | Electron 26+ |
-| **UI** | React 19, React Router DOM 7 |
-| **Styling** | Tailwind CSS, Framer Motion |
-| **HTTP** | Axios + custom interceptors |
-| **Icons** | Lucide React |
-| **Build** | Vite |
+| Layer       | Technology                   |
+| ----------- | ---------------------------- |
+| **Desktop** | Electron 26+                 |
+| **UI**      | React 19, React Router DOM 7 |
+| **Styling** | Tailwind CSS, Framer Motion  |
+| **HTTP**    | Axios + custom interceptors  |
+| **Icons**   | Lucide React                 |
+| **Build**   | Vite                         |
 
 ---
 
 ## 🔐 IPC Bridge
 
 **Available APIs (from renderer):**
+
 ```javascript
-window.electronAPI.openCodeExplorer(repoId)  // Open new Code Explorer window
+window.electronAPI.openCodeExplorer(repoId); // Open new Code Explorer window
 ```
 
 See `preload.cjs` for full API surface.
@@ -112,6 +118,7 @@ See `preload.cjs` for full API surface.
 ## 🎯 Main Components
 
 ### CodeExplorer (`src/pages/components/CodeExplorer/`)
+
 - File tree navigation with search
 - Syntax-highlighted code viewer
 - Gutter markers for issues (🔴 critical, ⚠️ warning)
@@ -120,12 +127,14 @@ See `preload.cjs` for full API surface.
 - Line-by-line problem highlighting
 
 ### Dashboard (`src/pages/Dashboard/`)
+
 - Repo list with filtering
 - KPI cards (total repos, analyzed, avg score)
 - Tabbed workspace (Overview, Issues, Predictions, Recommendations, Code)
 - Quick actions (Add repo, Edit profile, Logout)
 
 ### Auth (`src/pages/Auth/`)
+
 - JWT-based login/register
 - Token persistence in localStorage
 - Auto-redirect on 401 errors
@@ -138,6 +147,7 @@ See `preload.cjs` for full API surface.
 **Base URL:** `http://localhost:8000`
 
 **Key Endpoints:**
+
 - `POST /api/auth/login` - User authentication
 - `GET /api/repos` - List repositories
 - `POST /api/repos` - Create repository
@@ -150,6 +160,7 @@ See `preload.cjs` for full API surface.
 ## 📝 Environment Setup
 
 Create `.env.local`:
+
 ```
 VITE_API_URL=http://localhost:8000
 ```
@@ -177,12 +188,14 @@ VITE_API_URL=http://localhost:8000
 ## 🚢 Deployment
 
 ### Windows
+
 ```bash
 npm run build
 npm run electron-build:win
 ```
 
 ### macOS
+
 ```bash
 npm run build
 npm run electron-build:mac

@@ -9,14 +9,15 @@ import {
   CheckCircle,
   FolderOpen,
   FileCode,
-  Activity
+  Activity,
 } from 'lucide-react';
+import { useTheme } from '../../../contexts/ThemeContext';
 
 // ============================================================
 // MOCK DATA
 // ============================================================
 const MOCK_DATA = {
-  repositoryName: "openrepo-backend",
+  repositoryName: 'openrepo-backend',
   files: [
     {
       path: 'src/components/FormHandler.jsx',
@@ -40,21 +41,84 @@ const MOCK_DATA = {
     },
   ],
   issues: [
-    { file: 'src/components/FormHandler.jsx', line: 11, severity: 'warning', message: 'TODO comment - validation not implemented', type: 'todo' },
-    { file: 'src/utils/validators.js', line: 1, severity: 'error', message: 'Weak email validation - missing @ check is insufficient', type: 'security' },
-    { file: 'src/utils/validators.js', line: 17, severity: 'critical', message: 'No authentication check before exposing user data', type: 'security' },
-    { file: 'services/core_analysis/defect_detection.py', line: 25, severity: 'error', message: 'Hardcoded credential detection pattern too simple', type: 'logic' },
-    { file: 'controllers/auth_controller.py', line: 7, severity: 'warning', message: 'TODO - JWT validation logic missing', type: 'todo' },
-    { file: 'controllers/auth_controller.py', line: 17, severity: 'critical', message: 'Token expiry too long - security risk', type: 'security' },
+    {
+      file: 'src/components/FormHandler.jsx',
+      line: 11,
+      severity: 'warning',
+      message: 'TODO comment - validation not implemented',
+      type: 'todo',
+    },
+    {
+      file: 'src/utils/validators.js',
+      line: 1,
+      severity: 'error',
+      message: 'Weak email validation - missing @ check is insufficient',
+      type: 'security',
+    },
+    {
+      file: 'src/utils/validators.js',
+      line: 17,
+      severity: 'critical',
+      message: 'No authentication check before exposing user data',
+      type: 'security',
+    },
+    {
+      file: 'services/core_analysis/defect_detection.py',
+      line: 25,
+      severity: 'error',
+      message: 'Hardcoded credential detection pattern too simple',
+      type: 'logic',
+    },
+    {
+      file: 'controllers/auth_controller.py',
+      line: 7,
+      severity: 'warning',
+      message: 'TODO - JWT validation logic missing',
+      type: 'todo',
+    },
+    {
+      file: 'controllers/auth_controller.py',
+      line: 17,
+      severity: 'critical',
+      message: 'Token expiry too long - security risk',
+      type: 'security',
+    },
   ],
   predictions: [
-    { file: 'src/utils/validators.js', line: 1, message: 'Email validation is too permissive', confidence: 92, type: 'vulnerability' },
-    { file: 'controllers/auth_controller.py', line: 17, message: 'JWT implementation may have security flaws', confidence: 85, type: 'security' },
+    {
+      file: 'src/utils/validators.js',
+      line: 1,
+      message: 'Email validation is too permissive',
+      confidence: 92,
+      type: 'vulnerability',
+    },
+    {
+      file: 'controllers/auth_controller.py',
+      line: 17,
+      message: 'JWT implementation may have security flaws',
+      confidence: 85,
+      type: 'security',
+    },
   ],
   recommendations: [
-    { file: 'src/utils/validators.js', message: 'Use regex pattern for proper email validation', priority: 1, timeEstimate: '15 min' },
-    { file: 'controllers/auth_controller.py', message: 'Implement proper JWT expiry (15-30 min) and refresh tokens', priority: 1, timeEstimate: '1 hour' },
-    { file: 'src/components/FormHandler.jsx', message: 'Add client-side form validation before submission', priority: 2, timeEstimate: '30 min' },
+    {
+      file: 'src/utils/validators.js',
+      message: 'Use regex pattern for proper email validation',
+      priority: 1,
+      timeEstimate: '15 min',
+    },
+    {
+      file: 'controllers/auth_controller.py',
+      message: 'Implement proper JWT expiry (15-30 min) and refresh tokens',
+      priority: 1,
+      timeEstimate: '1 hour',
+    },
+    {
+      file: 'src/components/FormHandler.jsx',
+      message: 'Add client-side form validation before submission',
+      priority: 2,
+      timeEstimate: '30 min',
+    },
   ],
 };
 
@@ -63,10 +127,11 @@ const MOCK_DATA = {
 // ============================================================
 export default function CodeExplorer() {
   const { repoId } = useParams();
+  const { isDarkTheme } = useTheme();
   const [selectedFile, setSelectedFile] = useState(MOCK_DATA.files[0].path);
   const [expandedFolders, setExpandedFolders] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
-  
+
   // Accordion State
   const [expandedSections, setExpandedSections] = useState({
     issues: true,
@@ -131,8 +196,12 @@ export default function CodeExplorer() {
   // Current file scoped insights
   const currentFile = MOCK_DATA.files.find((f) => f.path === selectedFile);
   const fileIssues = MOCK_DATA.issues.filter((i) => i.file === selectedFile);
-  const filePredictions = MOCK_DATA.predictions.filter((p) => p.file === selectedFile);
-  const fileRecommendations = MOCK_DATA.recommendations.filter((r) => r.file === selectedFile);
+  const filePredictions = MOCK_DATA.predictions.filter(
+    (p) => p.file === selectedFile,
+  );
+  const fileRecommendations = MOCK_DATA.recommendations.filter(
+    (r) => r.file === selectedFile,
+  );
 
   // Filter files by search
   const filteredFiles = useMemo(() => {
@@ -150,9 +219,9 @@ export default function CodeExplorer() {
   };
 
   const toggleSection = (section) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
@@ -166,7 +235,9 @@ export default function CodeExplorer() {
         const isHidden = searchTerm && !filteredFiles.includes(value);
         if (isHidden) return null;
 
-        const fileIssueCount = MOCK_DATA.issues.filter((i) => i.file === value).length;
+        const fileIssueCount = MOCK_DATA.issues.filter(
+          (i) => i.file === value,
+        ).length;
         const isSelected = selectedFile === value;
 
         return (
@@ -187,8 +258,15 @@ export default function CodeExplorer() {
       const isExpanded = expandedFolders[fullPath] !== false; // Default expanded
       return (
         <div key={name} className="folder-node">
-          <div className="tree-item folder-item" onClick={() => toggleFolder(fullPath)}>
-            {isExpanded ? <ChevronDown size={14} className="chevron" /> : <ChevronRight size={14} className="chevron" />}
+          <div
+            className="tree-item folder-item"
+            onClick={() => toggleFolder(fullPath)}
+          >
+            {isExpanded ? (
+              <ChevronDown size={14} className="chevron" />
+            ) : (
+              <ChevronRight size={14} className="chevron" />
+            )}
             <FolderOpen size={14} className="tree-icon folder-icon" />
             <span className="tree-name">{name}</span>
           </div>
@@ -205,44 +283,92 @@ export default function CodeExplorer() {
   // Simple Regex-based Syntax Highlighting
   const highlightLine = (line) => {
     if (!line) return '';
-    let html = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    const keywords = ['import', 'export', 'const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while', 'def', 'class', 'from', 'async', 'await'];
+    let html = line
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const keywords = [
+      'import',
+      'export',
+      'const',
+      'let',
+      'var',
+      'function',
+      'return',
+      'if',
+      'else',
+      'for',
+      'while',
+      'def',
+      'class',
+      'from',
+      'async',
+      'await',
+    ];
     keywords.forEach((keyword) => {
       const regex = new RegExp(`\\b${keyword}\\b`, 'g');
-      html = html.replace(regex, `<span class="syntax-keyword">${keyword}</span>`);
+      html = html.replace(
+        regex,
+        `<span class="syntax-keyword">${keyword}</span>`,
+      );
     });
-    html = html.replace(/'[^']*'/g, (match) => `<span class="syntax-string">${match}</span>`);
-    html = html.replace(/"[^"]*"/g, (match) => `<span class="syntax-string">${match}</span>`);
-    html = html.replace(/\/\/.*$/g, (match) => `<span class="syntax-comment">${match}</span>`);
-    html = html.replace(/#.*$/g, (match) => `<span class="syntax-comment">${match}</span>`);
+    html = html.replace(
+      /'[^']*'/g,
+      (match) => `<span class="syntax-string">${match}</span>`,
+    );
+    html = html.replace(
+      /"[^"]*"/g,
+      (match) => `<span class="syntax-string">${match}</span>`,
+    );
+    html = html.replace(
+      /\/\/.*$/g,
+      (match) => `<span class="syntax-comment">${match}</span>`,
+    );
+    html = html.replace(
+      /#.*$/g,
+      (match) => `<span class="syntax-comment">${match}</span>`,
+    );
     return html;
   };
 
   const renderCodeLines = () => {
     if (!currentFile) return null;
     const lines = currentFile.content.split('\n');
-    
+
     // Map annotations by line
     const issueMap = {};
     const predMap = {};
     const recMap = {};
-    
-    fileIssues.forEach(i => { if(!issueMap[i.line]) issueMap[i.line] = []; issueMap[i.line].push(i); });
-    filePredictions.forEach(p => { if(!predMap[p.line]) predMap[p.line] = []; predMap[p.line].push(p); });
+
+    fileIssues.forEach((i) => {
+      if (!issueMap[i.line]) issueMap[i.line] = [];
+      issueMap[i.line].push(i);
+    });
+    filePredictions.forEach((p) => {
+      if (!predMap[p.line]) predMap[p.line] = [];
+      predMap[p.line].push(p);
+    });
     // Note: MOCK_DATA recommendations don't have lines, but we can assume them or leave as document level
 
     return lines.map((line, idx) => {
       const lineNum = idx + 1;
       const issues = issueMap[lineNum] || [];
       const predictions = predMap[lineNum] || [];
-      
+
       let highestSeverity = null;
-      if (issues.some(i => i.severity === 'critical' || i.severity === 'error')) highestSeverity = 'error';
-      else if (issues.some(i => i.severity === 'warning')) highestSeverity = 'warning';
+      if (
+        issues.some((i) => i.severity === 'critical' || i.severity === 'error')
+      )
+        highestSeverity = 'error';
+      else if (issues.some((i) => i.severity === 'warning'))
+        highestSeverity = 'warning';
       else if (predictions.length > 0) highestSeverity = 'prediction';
 
       return (
-        <div key={lineNum} className={`code-line ${highestSeverity ? `highlight-${highestSeverity}` : ''}`}>
+        <div
+          key={lineNum}
+          className={`code-line ${highestSeverity ? `highlight-${highestSeverity}` : ''}`}
+        >
           <div className="line-gutter-marker"></div>
           <div className="line-number">{lineNum}</div>
           <div className="line-content">
@@ -250,7 +376,10 @@ export default function CodeExplorer() {
             {highestSeverity && (
               <div className="line-tooltip">
                 {issues.map((issue, i) => (
-                  <div key={`i-${i}`} className={`tooltip tooltip-${issue.severity}`}>
+                  <div
+                    key={`i-${i}`}
+                    className={`tooltip tooltip-${issue.severity}`}
+                  >
                     <div className="tooltip-header">
                       <AlertTriangle size={12} />
                       <strong>{issue.severity.toUpperCase()}</strong>
@@ -278,7 +407,7 @@ export default function CodeExplorer() {
   return (
     <>
       <style dangerouslySetInnerHTML={{ __html: EXPLORER_STYLES }} />
-      
+
       <div className="ide-container">
         {/* Header */}
         <div className="ide-header">
@@ -294,7 +423,6 @@ export default function CodeExplorer() {
 
         {/* Main Workspace */}
         <div className="ide-workspace">
-          
           {/* Left Panel: File Tree */}
           <div className="ide-panel left-panel" style={{ width: leftWidth }}>
             <div className="panel-header">
@@ -309,14 +437,12 @@ export default function CodeExplorer() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <div className="file-tree">
-              {renderFileTree(fileTree)}
-            </div>
+            <div className="file-tree">{renderFileTree(fileTree)}</div>
           </div>
 
           {/* Left Resizer */}
-          <div 
-            className="resizer" 
+          <div
+            className="resizer"
             onMouseDown={() => {
               isResizingLeft.current = true;
               document.body.style.cursor = 'col-resize';
@@ -332,7 +458,7 @@ export default function CodeExplorer() {
                 {currentFile?.path.split('/').pop() || 'Untitled'}
               </div>
               <div className="breadcrumb">
-                 {currentFile?.path.replace(/\//g, ' / ')}
+                {currentFile?.path.replace(/\//g, ' / ')}
               </div>
             </div>
             <div className="editor-content">
@@ -345,8 +471,8 @@ export default function CodeExplorer() {
           </div>
 
           {/* Right Resizer */}
-          <div 
-            className="resizer" 
+          <div
+            className="resizer"
             onMouseDown={() => {
               isResizingRight.current = true;
               document.body.style.cursor = 'col-resize';
@@ -360,66 +486,103 @@ export default function CodeExplorer() {
               <Activity size={14} />
               <h3>INSPECTOR</h3>
             </div>
-            
+
             <div className="analysis-accordion-container">
-              
               {/* Accordion 1: Issues */}
               <div className="accordion-section">
-                <button className="accordion-header" onClick={() => toggleSection('issues')}>
+                <button
+                  className="accordion-header"
+                  onClick={() => toggleSection('issues')}
+                >
                   <div className="accordion-title">
-                    {expandedSections.issues ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    {expandedSections.issues ? (
+                      <ChevronDown size={14} />
+                    ) : (
+                      <ChevronRight size={14} />
+                    )}
                     Issues
                   </div>
-                  <span className={`count-badge ${fileIssues.length > 0 ? 'count-error' : ''}`}>
+                  <span
+                    className={`count-badge ${fileIssues.length > 0 ? 'count-error' : ''}`}
+                  >
                     {fileIssues.length}
                   </span>
                 </button>
                 {expandedSections.issues && (
                   <div className="accordion-content">
-                    {fileIssues.length > 0 ? fileIssues.map((issue, idx) => (
-                      <div key={idx} className={`insight-card card-${issue.severity}`}>
-                        <div className="card-header">
-                          <span className={`badge badge-${issue.severity}`}>Line {issue.line}</span>
-                          <span className="card-type">{issue.type}</span>
+                    {fileIssues.length > 0 ? (
+                      fileIssues.map((issue, idx) => (
+                        <div
+                          key={idx}
+                          className={`insight-card card-${issue.severity}`}
+                        >
+                          <div className="card-header">
+                            <span className={`badge badge-${issue.severity}`}>
+                              Line {issue.line}
+                            </span>
+                            <span className="card-type">{issue.type}</span>
+                          </div>
+                          <p className="card-message">{issue.message}</p>
                         </div>
-                        <p className="card-message">{issue.message}</p>
-                      </div>
-                    )) : <p className="empty-text">No issues found.</p>}
+                      ))
+                    ) : (
+                      <p className="empty-text">No issues found.</p>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Accordion 2: Predictions */}
               <div className="accordion-section">
-                <button className="accordion-header" onClick={() => toggleSection('predictions')}>
+                <button
+                  className="accordion-header"
+                  onClick={() => toggleSection('predictions')}
+                >
                   <div className="accordion-title">
-                    {expandedSections.predictions ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    {expandedSections.predictions ? (
+                      <ChevronDown size={14} />
+                    ) : (
+                      <ChevronRight size={14} />
+                    )}
                     Predictions
                   </div>
-                  <span className="count-badge">
-                    {filePredictions.length}
-                  </span>
+                  <span className="count-badge">{filePredictions.length}</span>
                 </button>
                 {expandedSections.predictions && (
                   <div className="accordion-content">
-                    {filePredictions.length > 0 ? filePredictions.map((pred, idx) => (
-                      <div key={idx} className="insight-card card-prediction">
-                        <div className="card-header">
-                          <span className="badge badge-prediction">Line {pred.line}</span>
-                          <span className="confidence">{pred.confidence}% match</span>
+                    {filePredictions.length > 0 ? (
+                      filePredictions.map((pred, idx) => (
+                        <div key={idx} className="insight-card card-prediction">
+                          <div className="card-header">
+                            <span className="badge badge-prediction">
+                              Line {pred.line}
+                            </span>
+                            <span className="confidence">
+                              {pred.confidence}% match
+                            </span>
+                          </div>
+                          <p className="card-message">{pred.message}</p>
                         </div>
-                        <p className="card-message">{pred.message}</p>
-                      </div>
-                    )) : <p className="empty-text">No predictions available.</p>}
+                      ))
+                    ) : (
+                      <p className="empty-text">No predictions available.</p>
+                    )}
                   </div>
                 )}
               </div>
 
               {/* Accordion 3: Recommendations */}
               <div className="accordion-section">
-                <button className="accordion-header" onClick={() => toggleSection('recommendations')}>
+                <button
+                  className="accordion-header"
+                  onClick={() => toggleSection('recommendations')}
+                >
                   <div className="accordion-title">
-                    {expandedSections.recommendations ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                    {expandedSections.recommendations ? (
+                      <ChevronDown size={14} />
+                    ) : (
+                      <ChevronRight size={14} />
+                    )}
                     Recommendations
                   </div>
                   <span className="count-badge">
@@ -428,22 +591,29 @@ export default function CodeExplorer() {
                 </button>
                 {expandedSections.recommendations && (
                   <div className="accordion-content">
-                    {fileRecommendations.length > 0 ? fileRecommendations.map((rec, idx) => (
-                      <div key={idx} className="insight-card card-recommendation">
-                        <div className="card-header">
-                          <span className="badge badge-recommendation">Priority {rec.priority}</span>
-                          <span className="time-est">{rec.timeEstimate}</span>
+                    {fileRecommendations.length > 0 ? (
+                      fileRecommendations.map((rec, idx) => (
+                        <div
+                          key={idx}
+                          className="insight-card card-recommendation"
+                        >
+                          <div className="card-header">
+                            <span className="badge badge-recommendation">
+                              Priority {rec.priority}
+                            </span>
+                            <span className="time-est">{rec.timeEstimate}</span>
+                          </div>
+                          <p className="card-message">{rec.message}</p>
                         </div>
-                        <p className="card-message">{rec.message}</p>
-                      </div>
-                    )) : <p className="empty-text">Code looks optimal.</p>}
+                      ))
+                    ) : (
+                      <p className="empty-text">Code looks optimal.</p>
+                    )}
                   </div>
                 )}
               </div>
-
             </div>
           </div>
-          
         </div>
       </div>
     </>
@@ -855,4 +1025,4 @@ const EXPLORER_STYLES = `
   color: #71717a;
   text-align: center;
 }
-`
+`;

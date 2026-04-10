@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 
 import Dashboard from './pages/Dashboard/Index';
 
@@ -11,9 +12,17 @@ import ProtectedRoute from './pages/components/ProtectedRoute';
 import Code from './pages/components/Code';
 import CodeExplorer from './pages/components/CodeExplorer/CodeExplorer';
 
-export default function App() {
+function AppContent() {
+  const { isDarkTheme } = useTheme();
+
   return (
-    <BrowserRouter>
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        isDarkTheme
+          ? 'bg-[#050505] text-zinc-300'
+          : 'bg-slate-50 text-slate-900'
+      }`}
+    >
       <Routes>
         <Route path="/" element={<AuthPage />} />
         <Route path="/dashboard/code" element={<Code />} />
@@ -36,6 +45,16 @@ export default function App() {
           <Route path=":repoId/Predictions" element={<Predictions />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <BrowserRouter>
+        <AppContent />
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }

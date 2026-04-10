@@ -16,3 +16,7 @@ export const analyzeRepo = (repoId) =>
 export const deleteRepo = (repoId) =>
   api.delete(`/repos/${repoId}`)
      .then(r => r.data);
+
+export const getRepoStructure = (repoId) =>
+  api.get(`/structure/${repoId}`)
+     .then(r => r.data);
