@@ -12,7 +12,7 @@ import {
   Layers,
   RefreshCw,
   Code2,
-  ArrowRight,
+  ChevronDown, // Replaced ArrowRight with ChevronDown
 } from 'lucide-react';
 
 // Replace with your actual API fetcher
@@ -145,7 +145,7 @@ export default function Recommendations() {
 
         {/* Scrollable List Area */}
         <div
-          className={`flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar transition-colors duration-300 ${isDarkTheme ? '' : ''}`}
+          className={`flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar transition-colors duration-300`}
         >
           <AnimatePresence>
             {[...data.items]
@@ -229,11 +229,16 @@ function MetricCard({
 }
 
 function RecommendationRow({ item, index, isDarkTheme }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const getStyleParams = (priority, type) => {
     let Icon = GitPullRequest;
     if (type === 'Security') Icon = ShieldAlert;
     if (type === 'Performance') Icon = Zap;
     if (type === 'Maintainability') Icon = Code2;
+    if (type === 'Testing') Icon = CheckCircle2;
+    if (type === 'Quality') Icon = Code2;
+    if (type === 'Structure') Icon = Layers;
 
     if (priority === 'High') {
       return {
@@ -270,72 +275,133 @@ function RecommendationRow({ item, index, isDarkTheme }) {
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.03 }}
-      className={`group flex items-start gap-3 p-3 rounded-lg border transition-colors cursor-pointer ${
+      className={`group flex flex-col rounded-lg border transition-all ${
         isDarkTheme
-          ? `${style.border} bg-[#0f0f11] hover:bg-white/5`
-          : `${style.border} bg-slate-50 hover:bg-slate-100`
+          ? `${style.border} ${isExpanded ? 'bg-white/5' : 'bg-[#0f0f11] hover:bg-white/5'}`
+          : `${style.border} ${isExpanded ? 'bg-slate-100' : 'bg-slate-50 hover:bg-slate-100'}`
       }`}
     >
-      {/* Icon Area */}
+      {/* Header (Always visible & Clickable) */}
       <div
-        className={`mt-0.5 p-2 rounded-md ${style.bg} ${style.color} shrink-0`}
+        className="flex items-start gap-3 p-3 cursor-pointer select-none"
+        onClick={() => setIsExpanded(!isExpanded)}
       >
-        <style.Icon size={16} />
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-2 mb-1">
-          <div className="flex items-center gap-2 truncate">
-            <h3
-              className={`text-sm font-bold truncate transition-colors ${isDarkTheme ? 'text-zinc-200 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-900'}`}
-            >
-              {item.title}
-            </h3>
-            <span
-              className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${style.badge}`}
-            >
-              {item.priority}
-            </span>
-          </div>
-          <div
-            className={`text-xs font-mono font-bold shrink-0 ${style.color}`}
-          >
-            Impact: {severityScore}%
-          </div>
+        {/* Icon Area */}
+        <div
+          className={`mt-0.5 p-2 rounded-md ${style.bg} ${style.color} shrink-0`}
+        >
+          <style.Icon size={16} />
         </div>
 
-        {/* Description limited to 2 lines to save vertical space */}
-        <p
-          className={`text-xs leading-relaxed line-clamp-2 pr-4 ${isDarkTheme ? 'text-zinc-400' : 'text-slate-600'}`}
-        >
-          {item.description}
-        </p>
+        {/* Main Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <div className="flex items-center gap-2 truncate">
+              <h3
+                className={`text-sm font-bold truncate transition-colors ${isDarkTheme ? 'text-zinc-200 group-hover:text-white' : 'text-slate-800 group-hover:text-slate-900'}`}
+              >
+                {item.title}
+              </h3>
+              <span
+                className={`text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider shrink-0 ${style.badge}`}
+              >
+                {item.priority}
+              </span>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <div className={`text-xs font-mono font-bold ${style.color}`}>
+                {severityScore}%
+              </div>
+              {/* Better UX: Downward Chevron that flips up when expanded */}
+              <div
+                className={`transform transition-transform duration-200 flex items-center justify-center ${isExpanded ? 'rotate-180' : ''}`}
+              >
+                <ChevronDown size={16} className={`${isDarkTheme ? 'text-zinc-500 group-hover:text-zinc-300' : 'text-slate-400 group-hover:text-slate-600'} transition-colors`} />
+              </div>
+            </div>
+          </div>
 
-        {/* Bottom Metadata */}
-        <div
-          className={`flex items-center justify-between mt-2 pt-2 transition-colors ${
-            isDarkTheme
-              ? 'border-t border-white/5'
-              : 'border-t border-slate-200'
-          }`}
-        >
-          <span
-            className={`text-[10px] uppercase tracking-wider font-mono ${isDarkTheme ? 'text-zinc-500' : 'text-slate-500'}`}
+          {/* Description limited to 2 lines to save vertical space */}
+          <p
+            className={`text-xs leading-relaxed line-clamp-2 pr-4 ${isDarkTheme ? 'text-zinc-400' : 'text-slate-600'}`}
           >
-            {item.type}
-          </span>
-          <span
-            className={`text-[10px] flex items-center gap-1 font-semibold transition-colors ${
+            {item.description}
+          </p>
+
+          {/* Bottom Metadata (always visible) */}
+          <div
+            className={`flex items-center justify-between mt-2 pt-2 transition-colors ${
               isDarkTheme
-                ? 'text-zinc-500 group-hover:text-zinc-300'
-                : 'text-slate-500 group-hover:text-slate-700'
+                ? 'border-t border-white/5'
+                : 'border-t border-slate-200'
             }`}
           >
-            View Modules <ArrowRight size={10} />
-          </span>
+            <span
+              className={`text-[10px] uppercase tracking-wider font-mono ${isDarkTheme ? 'text-zinc-500' : 'text-slate-500'}`}
+            >
+              {item.type}
+            </span>
+            <span
+              className={`text-[10px] uppercase tracking-wider font-bold ${isDarkTheme ? 'text-zinc-500' : 'text-slate-500'}`}
+            >
+              {item.effort_estimate || 'N/A'}
+            </span>
+          </div>
         </div>
       </div>
+
+      {/* Expanded Content */}
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className={`overflow-hidden border-t ${isDarkTheme ? 'border-white/5' : 'border-slate-200'}`}
+          >
+            <div className="p-3 px-4 space-y-3 bg-black/5">
+              {/* Action Items */}
+              {item.action_items && item.action_items.length > 0 && (
+                <div>
+                  <h4
+                    className={`text-[11px] font-bold uppercase tracking-wider mb-2 ${isDarkTheme ? 'text-zinc-300' : 'text-slate-700'}`}
+                  >
+                    Action Items
+                  </h4>
+                  <ul className="space-y-1.5">
+                    {item.action_items.map((action, i) => (
+                      <li
+                        key={i}
+                        className={`text-xs leading-relaxed flex gap-2 ${isDarkTheme ? 'text-zinc-400' : 'text-slate-600'}`}
+                      >
+                        <span className="shrink-0 mt-0.5 text-blue-400/70">•</span>
+                        <span>{action}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Expected Impact */}
+              {item.expected_impact && (
+                <div className="pt-2">
+                  <h4
+                    className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${isDarkTheme ? 'text-zinc-300' : 'text-slate-700'}`}
+                  >
+                    Expected Impact
+                  </h4>
+                  <p
+                    className={`text-xs leading-relaxed ${isDarkTheme ? 'text-zinc-400' : 'text-slate-600'}`}
+                  >
+                    {item.expected_impact}
+                  </p>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
