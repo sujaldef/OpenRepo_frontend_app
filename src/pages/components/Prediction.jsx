@@ -118,7 +118,7 @@ function FileRiskCard({ file, index }) {
       }}
       className="relative border rounded-xl overflow-hidden transition-colors duration-300"
     >
-      {/* Dynamic Top Border for visual weight based on risk */}
+      {/* Dynamic Top Border for visual      weight based on risk */}
       <div
         className="absolute top-0 left-0 h-1 bg-rose-500"
         style={{ width: `${riskPercent}%`, opacity: file.risk_score }}
