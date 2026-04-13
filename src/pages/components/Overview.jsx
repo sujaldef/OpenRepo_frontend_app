@@ -141,7 +141,7 @@ export default function Overview() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 2. Quality & Structure Snapshot  (Left 2/3) */}
+        {/* 2. Quality & Structure Snapshot (Left 2/3) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
