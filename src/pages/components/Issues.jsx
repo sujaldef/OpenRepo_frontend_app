@@ -127,7 +127,7 @@ export default function Issues() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-120px)] min-h-[600px]">
-      {/* LEFT PANE: File Explorer (Ranked by  Risk) */}
+      {/* LEFT PANE: File Explorer (Ranked by     Risk) */}
       <div
         style={{
           backgroundColor: 'var(--bg-secondary)',
