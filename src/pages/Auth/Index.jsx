@@ -23,7 +23,7 @@ import { registerUser, loginUser } from '../../api/auth';
 import { useTheme } from '../../contexts/ThemeContext';
 
 export default function AuthPage() {
-  const [mode, setMode] = useState('login'); // 'login' | 'register'
+  const [mode, setMode] = useState('login'); // 'login'  | 'register'
   const navigate = useNavigate();
   const { isDarkTheme } = useTheme();
   const toggleMode = () =>
