@@ -719,33 +719,7 @@ function WorkspaceShell({ repo, userProfile }) {
               </NavLink>
             ))}
 
-            {/* Code Explorer Button - Opens in NEW Window */}
-            <button
-              onClick={handleOpenCodeExplorer}
-              style={{
-                color: 'var(--text-secondary)',
-                borderColor: 'transparent',
-              }}
-              className="relative w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 border hover:opacity-80"
-              title="Opens Code Explorer in a new window"
-            >
-              <Code2
-                size={18}
-                style={{
-                  color: 'var(--text-secondary)',
-                }}
-              />
-              Code Explorer
-              <span
-                style={{
-                  color: 'var(--text-secondary)',
-                  backgroundColor: 'var(--bg-elevated)',
-                }}
-                className="ml-auto text-[10px] px-1.5 py-0.5 rounded"
-              >
-                New Window
-              </span>
-            </button>
+         
           </nav>
         </div>
 
